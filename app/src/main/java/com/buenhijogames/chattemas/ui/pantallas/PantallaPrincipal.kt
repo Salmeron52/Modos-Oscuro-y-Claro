@@ -24,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import com.buenhijogames.chattemas.componentes.BoxMensajes
 import com.buenhijogames.chattemas.componentes.ChatTextField
+import com.buenhijogames.chattemas.model.ModeloDeMensajes
+
+//https://material-foundation.github.io/material-theme-builder
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,10 +61,26 @@ fun PantallaPrincipal() {
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.onSecondary),
         ) {
+           /* val mensaje1 = ModeloDeMensajes(
+                esMiMensaje = true,
+                texto = "Hola, qué tal? En un lugar de la Mancha, de cuyo nombre no " +
+                        "quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de " +
+                        "lanza en astillero, adarga antigua, rocín flaco y galgo corredor."
+            )
+            val mensaje2 = ModeloDeMensajes(
+                esMiMensaje = false,
+                texto = "Hola, qué tal? Caminante, son tus huellas el caminno y nada más; " +
+                        "caminante, no hay camino, se hace camino al andar. Al andar se hace " +
+                        "el camino, y al volver la vista atrás se ve la senda que nunca se ha " +
+                        "de volver a pisar. Caminante no hay camino sino estelas en la mar."
+            )*/
             var mensaje by rememberSaveable { mutableStateOf("") }
             val focusManager = LocalFocusManager.current
+            var listaDeMensajes by rememberSaveable {
+                mutableStateOf(listOf<ModeloDeMensajes>())
+            }
             //Mensajes
-            BoxMensajes(modifier = Modifier.weight(1f))
+            BoxMensajes(modifier = Modifier.weight(1f), listaDeMensajes = listaDeMensajes)
             //TextField
             ChatTextField(
                 mensaje = mensaje,

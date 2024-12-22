@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+//https://material-foundation.github.io/material-theme-builder
+
 @Composable
 fun ChatTextField(mensaje: String, onMensajeChange: (String) -> Unit, onMensajeSent: () -> Unit, quitarTeclado: () -> Unit) {
     Box(
@@ -38,7 +40,7 @@ fun ChatTextField(mensaje: String, onMensajeChange: (String) -> Unit, onMensajeS
                 ),
             value = mensaje,
             onValueChange = { onMensajeChange(it) },
-            label = { Text("Mensaje") },
+            placeholder = { Text("Mensaje") },
             keyboardOptions = KeyboardOptions(),
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedBorderColor = Color.Transparent,
