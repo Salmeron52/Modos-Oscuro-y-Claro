@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -18,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -25,6 +27,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import com.buenhijogames.chattemas.componentes.BoxMensajes
 import com.buenhijogames.chattemas.componentes.ChatTextField
 import com.buenhijogames.chattemas.model.ModeloDeMensajes
+import com.buenhijogames.chattemas.utilidades.respuestaAleatoria
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 //https://material-foundation.github.io/material-theme-builder
 
@@ -61,31 +66,40 @@ fun PantallaPrincipal() {
                 .padding(innerPadding)
                 .background(MaterialTheme.colorScheme.onSecondary),
         ) {
-           /* val mensaje1 = ModeloDeMensajes(
-                esMiMensaje = true,
-                texto = "Hola, qué tal? En un lugar de la Mancha, de cuyo nombre no " +
-                        "quiero acordarme, no ha mucho tiempo que vivía un hidalgo de los de " +
-                        "lanza en astillero, adarga antigua, rocín flaco y galgo corredor."
-            )
-            val mensaje2 = ModeloDeMensajes(
-                esMiMensaje = false,
-                texto = "Hola, qué tal? Caminante, son tus huellas el caminno y nada más; " +
-                        "caminante, no hay camino, se hace camino al andar. Al andar se hace " +
-                        "el camino, y al volver la vista atrás se ve la senda que nunca se ha " +
-                        "de volver a pisar. Caminante no hay camino sino estelas en la mar."
-            )*/
+
             var mensaje by rememberSaveable { mutableStateOf("") }
             val focusManager = LocalFocusManager.current
             var listaDeMensajes by rememberSaveable {
                 mutableStateOf(listOf<ModeloDeMensajes>())
             }
+            val scrollState = rememberScrollState()
+            val scope = rememberCoroutineScope()
+
             //Mensajes
-            BoxMensajes(modifier = Modifier.weight(1f), listaDeMensajes = listaDeMensajes)
+            BoxMensajes(
+                modifier = Modifier.weight(1f),
+                listaDeMensajes = listaDeMensajes,
+                scrollState = scrollState
+            )
+
             //TextField
             ChatTextField(
                 mensaje = mensaje,
                 onMensajeChange = { mensaje = it },
-                onMensajeSent = { mensaje = "" },
+                onMensajeSent = {
+                    val nuevoMensaje = ModeloDeMensajes(texto = mensaje, esMiMensaje = true)
+                    mensaje = ""
+                    listaDeMensajes = listaDeMensajes + nuevoMensaje
+                    val respuesta = respuestaAleatoria()
+                    scope.launch {
+                        delay(150) //para que compose recomponga antes de hacer scroll
+                        scrollState.animateScrollTo(scrollState.maxValue)
+                        delay(300)
+                        listaDeMensajes = listaDeMensajes + respuesta
+                        delay(150)
+                        scrollState.animateScrollTo(scrollState.maxValue)
+                    }
+                },
                 quitarTeclado = { focusManager.clearFocus() }
             )
         }

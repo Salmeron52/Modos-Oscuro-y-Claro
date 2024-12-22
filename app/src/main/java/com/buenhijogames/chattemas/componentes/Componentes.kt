@@ -23,14 +23,19 @@ import androidx.compose.ui.unit.dp
 //https://material-foundation.github.io/material-theme-builder
 
 @Composable
-fun ChatTextField(mensaje: String, onMensajeChange: (String) -> Unit, onMensajeSent: () -> Unit, quitarTeclado: () -> Unit) {
+fun ChatTextField(
+    mensaje: String,
+    onMensajeChange: (String) -> Unit,
+    onMensajeSent: () -> Unit,
+    quitarTeclado: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
             .padding(horizontal = 16.dp)
             .imePadding()
-    ){
+    ) {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
